@@ -1,0 +1,65 @@
+#### Data Viz Features
+- Game Metadata
+	- game_id
+	- home_team_abbr
+	- visitor_team_abbr
+	- possession_team
+- Play Metadata
+	- play_id
+	- play_description
+	- quarter
+	- game_clock
+	- down
+	- yards_to_go
+	- yardline_side
+	- yardline_number
+	- possession_team
+	- pre_snap_home_score
+	- pre_snap_visitor_score
+- Play Data
+	- pass_length
+	- pass_result
+	- complete
+	- offense_formation
+	- receiver_alignment
+	- ball_land_x, ball_land_y
+	- route_of_targeted_receiver
+	- pass_location_type
+	- team_coverage_man_zone
+	- team_coverage_type
+	- yards_gained
+- Frame Data
+	- frame_id
+	- to_release
+- tgt_rec_
+	- name
+	- x, y
+	- s, a, o, dir
+	- ball_dist
+	- v_toward_ball
+	- closing_speed_ball
+	- t_to_ball
+	- a_toward_ball
+- def_N_ (also def_closeN_ for ranked)
+	- name
+	- x, y
+	- s, a, o, dir
+	- dist
+	- ball_dist
+	- v_toward_ball
+	- closing_speed_ball
+	- momentum_adv
+	- closing_speed_rec
+	- angle_rec_deg
+	- angle_ball_deg
+	- t_to_ball
+	- in_phase
+- Team Defense
+	- min_separation_all_def
+	- mean_separation_closest_3_defs
+	- min_t_def_to_ball
+	- min_t_def_minus_t_rec
+	- crowdedness
+	- closest_2_def_angle_diff
+
+#### Viz Ideas
