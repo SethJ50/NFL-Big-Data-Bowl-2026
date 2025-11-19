@@ -30,6 +30,7 @@
 	- yards_gained
 - Frame Data
 	- frame_id
+	- frame_global
 	- to_release
 	- frames_till_event
 	- flight_normalized_time
@@ -50,20 +51,39 @@
 	- ball_dist
 	- v_toward_ball
 	- closing_speed_ball
-	- closing_speed_ball_adv
-	- momentum_adv
-	- closing_speed_rec
-	- angle_rec_deg
-	- angle_ball_deg
+	- closing_speed_ball_adv *
+	- momentum_adv *
+	- closing_speed_rec *
+	- angle_rec_deg *
+	- angle_ball_deg *
 	- t_to_ball
-	- in_phase
+	- in_phase *
 - Team Defense
-	- min_separation_all_def
-	- mean_separation_closest_3_defs
-	- min_t_def_to_ball
-	- min_t_def_minus_t_rec
-	- crowdedness
-	- closest_2_def_angle_diff
+	- min_separation_all_def (same as def_close1_dist) *
+	- mean_separation_closest_3_defs *
+	- min_ball_dist_all_def *
+	- ball_dist_advantage *
+	- min_t_def_to_ball *
+	- min_t_def_minus_t_rec *
+	- crowdedness *
+	- closest_2_def_angle_diff *
+
+```
+Remarks:
+* In analyzing [metric], we see the following:
+  * GO: 
+  * POST: 
+  * CORNER: 
+  * CROSS: 
+  * IN: 
+  * HITCH: 
+  * OUT: 
+  * WHEEL: 
+  * SLANT: 
+
+Future Investigation:
+* 
+```
 
 Idea: I have written out some thoughts on each feature. I would be interested in creating viz's / EDA metrics for each of these to address my thoughts, and write out some narrative around it... A lot of these may involve adding back some more features, and may lead to ideas for other features...
 
@@ -88,6 +108,8 @@ SCREEN      110
 - Will be meaningful to include for receiver, as well as analyzing a closest defender to the ball, potentially an average distance of defenders to ball as a ball-crowdedness metric. Might also be useful to add in an advantage quantification between closest defender to ball and receiver.
 - Plot ball_dist of closest defender over time, aggregated ball distance for N defenders over time, and advantage over time.
 
+**ball_dist_advantage**: Targeted receiver's distance from the ball minus the closest defender to the ball's distance to the ball.
+
 **v_toward_ball**: For a receiver, should check this out on change of direction routes to analyze the breaking point on the route. I think that from a modeling perspective, this is important. *Consider adding advantage between this and the closest defender to the receiver, and this and the closest receiver to the ball*
 - Individually for receivers or defenders, this is pretty much meaningless... the best thing to come from this is purely on an advantage level... See below
 
@@ -100,7 +122,7 @@ SCREEN      110
 
 **closing_speed_ball_adv**: Advantage difference between window closing speed toward ball of receiver versus a defender.
 
-**closing_speed_receiver:** also review this
+**closing_speed_rec:** How fast is the window between the defender and the receiver closing for a particular defender?
 
 **t_to_ball**: This is kind of noisy, especially for defenders. I think in essence, this combines the speed that a defender is moving with the distance that they are away from the ball. Kind of sounds more interesting the more you think about it, but not in the way I originally expected. *This is interesting in an advantage perspective in min_t_def_minus_t_rec, but we probably need a new way to plot / do EDA*
 - I don't think that looking at the closest defender to receiver value of this is that interesting... rather, I think just the metrics we have for comparing the minimum of this to the minimum of receiver is interesting...
