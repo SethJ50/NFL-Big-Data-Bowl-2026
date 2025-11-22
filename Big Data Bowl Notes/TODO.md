@@ -1,0 +1,12 @@
+- [ ] Create Animation visualization view with plot of players on field and completion probability synchronously
+- [ ] Remake model by myself - use cross validation, understand code
+- [ ] Solidify and understand model analysis and important features - create write up
+- [ ] Create write up on AUC, what it really means, name the metric
+- [ ] Redo 'Model Analysis' - Create plots like sum of AUC for completions/incompletions
+- [ ] Make tables for paper: top guys overall, top guys by route_group, ...
+- [ ] Time permitting: Analysis for defenders with data we have
+- [ ] Write Paper!
+	- [ ] Case Studies: (use animations)
+		- [ ] Why is Ja'Marr so low??? (external variables - forcing them the ball, QB play, ...)
+		- [ ] Top guys
+		- [ ] 

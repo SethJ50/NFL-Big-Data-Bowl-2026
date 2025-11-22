@@ -149,8 +149,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "3bdcffd07930bf72",
@@ -243,8 +242,10 @@
   },
   "active": "0d7d782937751f88",
   "lastOpenFiles": [
-    "Data Visualization.md",
+    "Bug Solution Options.md",
+    "TODO.md",
     "Modeling.md",
+    "Data Visualization.md",
     "GPT Feature Ideas.md",
     "Tasks.md",
     "Data Engineering Overview.md",
