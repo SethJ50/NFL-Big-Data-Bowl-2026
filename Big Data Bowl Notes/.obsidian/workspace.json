@@ -92,7 +92,7 @@
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 5
       }
     ],
     "direction": "vertical"
@@ -241,12 +241,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "334ce829c94b25de",
+  "active": "0d7d782937751f88",
   "lastOpenFiles": [
-    "Modeling.md",
-    "Tasks.md",
-    "GPT Feature Ideas.md",
     "Data Visualization.md",
+    "Modeling.md",
+    "GPT Feature Ideas.md",
+    "Tasks.md",
     "Data Engineering Overview.md",
     "Ideas.md",
     "Welcome.md"

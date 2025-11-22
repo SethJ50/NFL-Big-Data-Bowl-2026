@@ -7,6 +7,53 @@ For this model, I have the following in mind for inputs:
 	- Momentum comparison (speed, direction) between targeted receiver and defender
 	- Momentum comparison to where the ball is thrown (pythagorean theorem, speed component towards ball?)
 
+### Modeling Notes
+- Train separate models for high level route families, not exact routes...
+	- Vertical: Go, Post, Corner
+	- Break Outside: Out
+	- Break Inside: In
+	- Crossers: Shallow, Cross, Over
+	- ...
+- Create a 'break' feature somehow
+- Modeling approach roadmap:
+	- Use features + high level route family = frame index
+	- Train gradient boosted tree model
+	- Then
+
+
+#### Modeling Features
+- **flight_normalized_time**: A number in the 0-1 range representing where within the progression of the route between ball release and completion the current frame is.
+- **route_group**: VERTICAL = GO, POST, CORNER, WHEEL... INTERMEDIATE = CROSS, IN, OUT... QUICK = SLANT, HITCH... BACKFIELD = FLAT, SCREEN
+- **route_of_targeted_receiver**:
+- **pass_length**: Distance beyond the LOS that the ball traveled
+- **def_closeN_dist**: Distance between the receiver and the N-th closest defender (N: 1-4)
+- **tgt_rec_closing_speed_ball**: Rate at which window between targeted receiver and ball is closing
+- **def_closeN_closing_speed_ball**: Rate at which the window between N-th closest defender and ball is closing
+- **def_closeN_closing_speed_ball_adv**: Measures the difference between the targeted receiver's closing speed toward the ball and the defender's closing speed toward the ball (for the N-th closest defender to the receiver) (reworked such that positive values favor the receiver in closing in on the ball faster than the defender)
+- **def_closeN_momentum_adv**: Difference between the targeted receiver's velocity component toward the ball and that of the nearest defender
+- **def_closeN_closing_speed_rec**: How fast is the closest defender closing the window to the receiver? (Negative means defender gaining on receiver, positive means gap opening)
+- **mean_separation_closest_3_defs**: Average separation between receiver and closest 3 defenders
+- **min_ball_dist_all_def**: Minimum distance of all defenders to ball
+- **ball_dist_advantage**: Targeted receiver's distance from the ball minus the closest defender to the ball's distance from the ball
+- **def_closeN_angle_rec_deg**: Angle difference between the defender and the receiver in their direction of motion, almost like angle of attack for defenders (for the N-th closest defender to the receiver)
+- **def_closeN_angle_ball_deg**: Measurement in degrees of angle between the defender's motion and their direct path to the ball (for the N-th closest defender to the receiver)
+- **tgt_rec_t_to_ball**: 
+- **min_t_def_to_ball**: Minimum time for a defender to get to the ball, based on their current speed and distance from the ball
+- **min_t_def_minus_t_rec**: Difference between minimum time for a defender to get to ball at current speed and distance and that of the targeted receiver (negative should favor the receiver)
+- **tgt_rec_ball_facing_angle**: Angle between where receiver is facing versus vector from WR -> ball
+- **tgt_rec_sideline_dist**: Distance from sideline of targeted receiver
+- **tgt_rec_turn_angle_smoothed**: How sharply WR changes based on frame to frame change in dir, smoothed on 3 frame rolling averages.
+- **crowdedness**: Separate metric measuring crowdedness around receiver of defenders, a sum of the reciprocal of distance from receiver
+- **tgt_rec_a_toward_ball**: Receiver's acceleration component toward ball
+- **def_close1_in_phase**: Quantifies how aligned the degree of motion is between the defender and receiver
+- **closest_2_def_angle_diff**: Analyzes the angle difference between the closest two defenders attack angle to the receiver
+
+
+
+
+
+
+
 #### Basic Features
 - tgt_rec_ / def_N_
 	- x, y
