@@ -12,4 +12,26 @@
 	- [ ] Case Studies: (use animations)
 		- [ ] Why is Ja'Marr so low??? (external variables - forcing them the ball, QB play, ...)
 		- [ ] Top guys
-		- [ ] 
+
+
+
+POS_TEAM: 27
+DEF_TEAM: 17
+Q1: 14:33 3rd & 14
+Route:
+Coverage:
+Pass Length: 
+Pass {complete} to {tgt_rec_name} for {yards_gained}
+
+possession_team
+home_team_abbr
+visitor_team_abbr
+quarter
+game_clock
+down
+yards_to_go
+pre_snap_home_score
+pre_snap_visitor_score
+pass_length
+route_of_targeted_receiver
+team_coverage_type
