@@ -42,7 +42,7 @@ For this model, I have the following in mind for inputs:
 - **min_t_def_minus_t_rec**: Difference between minimum time for a defender to get to ball at current speed and distance and that of the targeted receiver (negative should favor the receiver)
 - **tgt_rec_ball_facing_angle**: Angle between where receiver is facing versus vector from WR -> ball
 - **tgt_rec_sideline_dist**: Distance from sideline of targeted receiver
-- **tgt_rec_turn_angle_smoothed**: How sharply WR changes based on frame to frame change in dir, smoothed on 3 frame rolling averages.
+-  **tgt_rec_turn_angle_smoothed**: How sharply WR changes based on frame to frame change in dir, smoothed on 3 frame rolling averages.
 - **crowdedness**: Separate metric measuring crowdedness around receiver of defenders, a sum of the reciprocal of distance from receiver
 - **tgt_rec_a_toward_ball**: Receiver's acceleration component toward ball
 - **def_close1_in_phase**: Quantifies how aligned the degree of motion is between the defender and receiver

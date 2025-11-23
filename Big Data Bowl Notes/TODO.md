@@ -1,3 +1,6 @@
+- [x] take a look at flight normalized time again, recalculate
+- [x] Replot things to see if they pass the eye test
+- [ ] refit model, retry animation
 - [ ] Create Animation visualization view with plot of players on field and completion probability synchronously
 - [ ] Remake model by myself - use cross validation, understand code
 - [ ] Solidify and understand model analysis and important features - create write up
