@@ -2,10 +2,9 @@
 - [x] Replot things to see if they pass the eye test
 - [x] refit model, retry animation
 - [x] Create Animation visualization view with plot of players on field and completion probability synchronously
-- [ ] Remake model by myself - use cross validation, understand code
-- [ ] Solidify and understand model analysis and important features - create write up
-- [ ] Create write up on AUC, what it really means, name the metric
-- [ ] Redo 'Model Analysis' - Create plots like sum of AUC for completions/incompletions
+- [x] Remake model by myself - use cross validation, understand code
+- [x] Solidify and understand model analysis and important features
+- [x] Redo 'Model Analysis' - Create plots like sum of AUC for completions/incompletions
 - [ ] Make tables for paper: top guys overall, top guys by route_group, ...
 - [ ] Time permitting: Analysis for defenders with data we have
 - [ ] Write Paper!
