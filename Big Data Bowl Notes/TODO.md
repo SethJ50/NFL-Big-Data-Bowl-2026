@@ -22,3 +22,14 @@ Statistic name: Net In-Air Completion Probability Change
 
 
 ![[Screenshot 2025-11-23 at 10.09.55 AM.png]]
+
+Play Context:
+game_id
+play_id
+frame_global
+max_before_frame
+
+
+Basic Player Info:
+name
+x, y, s, a, o, dir
