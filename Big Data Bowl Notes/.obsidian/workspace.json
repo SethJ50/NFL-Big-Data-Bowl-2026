@@ -106,21 +106,35 @@
             }
           },
           {
-            "id": "9dfbfc3748a702c7",
+            "id": "6579293d395d8354",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Modeling Approach.md",
+                "file": "Modeling Notes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Modeling Approach"
+              "title": "Modeling Notes"
+            }
+          },
+          {
+            "id": "2ec061c6161d859c",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Writeup Draft.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Writeup Draft"
             }
           }
         ],
-        "currentTab": 6
+        "currentTab": 8
       }
     ],
     "direction": "vertical"
@@ -268,10 +282,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "0d7d782937751f88",
+  "active": "2ec061c6161d859c",
   "lastOpenFiles": [
     "Modeling Approach.md",
+    "Writeup Draft.md",
     "TODO.md",
+    "Modeling Notes.md",
     "Screenshot 2025-11-23 at 10.09.55 AM.png",
     "make_wide_data.md",
     "Modeling.md",
