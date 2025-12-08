@@ -9,72 +9,81 @@ This project investigates how effective receivers are at increasing the probabil
 Writeup Skeleton:
 - Introduction: the deep pass is an event of relatively high risk and high reward, and captivates the audience due to its perceived uncertainty. Despite this perception, the completion of a deep pass strongly relies on both the ability of the receiver to make a play on the ball, the defenders (both individually and as a group) to work to prevent such a play, and the dynamics of how the motion, geometry, and spatial relation of the receiver and such defenders interact. Though the entirety of a route matters with regard to the likelyhood of a receiver catching the ball, the subset of time in which the ball in the air tends to be perceived as most uncertain, ignoring the abilities of the receiver to tangibly increase the probability of a catch while the ball is in the air, alongside the ability of defenders and the defense as a whole to prevent such task. With a sight on quantifying the uncertainty of the phase of a deep pass when the ball is in the air, and a goal of understanding which of the NFL's receivers exhibited the best ability to increase the chances that the deep ball is caught, this project seeks to investigate how spatial, geometric, and motion related features over the progression of a route with the ball in the air impacts ultimate probability of completion, allowing the ranking of receivers ability in this area on a custom metric called 'Net In-Air Completion Probability Change'
 
+**Phrasing Notes***:
+Impacts
+Route Adjustment, Ball Tracking, In-Air playmaking,
+
+Features:
+Player movement/motion, spatial relationships, separation dynamics, ball-relative tracking
+
+Referring to the Metric:
+Quantifies influence on completion probability during ball-flight window of downfield targets, how much a receiver increases/decreases chance of completion while ball is in flight relative to moment of release, in-flight impact on deep targets, 
+
 **Executive Summary**
-Focuses: What problem coaches have, what you built, one surprising actionable insight, what tool/viz you deliver
+Deep passes are some of the most valuable offensive plays in football, yet teams still lack an effective way to quantify receivers' ability to adjust, track, and create catchable space once the ball is in the air. This project seeks to address this gap, developing methodology to quantify receivers' influence on completion probability when the ball is in the air.
 
+Using frame-by-frame tracking data, I engineered features describing movement of receivers and defenders alongside their spatial relationships both between one and other and relative to the ball. With these, I trained a model designed to estimate the probability of a completion for each post-release frame of a play. In combining these estimates, I derived a metric called 'Net In-Air Completion Probability Change' (NCPC), which measures how much a receiver increases (or decreases) the chance of a completion while the ball is in flight, relative to the moment of release.
 
+To support interpretation of this metric and its underlying modeling of completion probability, I built a two-paned play animation tool. For a given play, the tool illustrates player movement of all tracked players alongside the evolving completion probability curve estimated from the model, enabling analysts to visualize how motion related spatial dynamics impact catch probability while the ball is in the air.
 
+Applied across the entirety of the 2023 regular season dataset, NCPC reveals meaningful and sometimes surprising differences in receivers' in-flight impact on deep target completion probability. The metric offers teams a new and unique data-driven way to evaluate skills including route adjustment, ball-tracking, and in-flight playmaking ability in one of football's highest-leverage play types.
 
-
-- Executive Summary
-	- Problem Focused On: Receiver's ability to increase completion probability while ball is in the air on deep passes.
-	- Why it matters?: (not a strong argument yet) Analyzing receivers ability to increase completion percentage while the ball is in the air indicates a key skill/ability that is useful to know for coaches, scouts, front offices to assess performance, optimize gameplans, scout opponents, ...
-	- Core Metric: 'Net In-Air Completion Probability Change' uses estimates of ultimate completion probability at each frame of a route while the ball is in the air, and creates a net integration based sum of how much total completion probability was added (or lost) while the ball is in the air until it lands/is caught
-	- Key Insights / Outcomes: ? We were able to rate receivers on this metric over the course of the entirety of the dataset, resulting in rankings that included expected players as well as surprises. We could further dive into case studies of particular players / plays and and visualize what the model sees with regards to the features and understand how spatial and motion related characteristics of route development throughout the ball in air period increase completion probability.
-	- Visualization or Tool Built: I created an animated visualization which shows the motion of the players over the course of time, with a plot underneath showing the estimated completion probability at each frame while the ball is in the air. This completion probability is also encoded as color and size of the receivers marker on the field animation. This allows for visual analysis of model results, ..., etc.
 
 **Motivation/Football Background**
-Add concrete football Motivations: Struggle to quantify ball tracking ability, receivers who gain separation post-throw are extremely valuable, deep targets account for disproportionate EPA, route adjustment versus assigned route distinctions, ability to gain leverage on DBs
+Deep passes occupy a unique and influential space within modern offensive strategy. Despite their relative infrequency and lower completion probability, their explosive-yardage potential creates disproportional advantage in Expected Points Added (EPA) compared to other offensive play types. Because of this, defenses commit substantial resources to preventing their success, including safety depth, coverage rotations, and leverage techniques. The threat of the deep ball is one that shapes defensive behavior on every snap, making downfield attempts one of the most strategically impactful play types in the game.
+
+Beyond quarterback accuracy and defensive structure, which are clearly impactful, receivers play a critical and often under-recognized role in determining the outcome of deep passes. Deep targets substantially test a receiver's ability to track the ball over long trajectories, adjust their routes mid-flight, manage leverage on defenders, and create substantial catch space, all at a high speed. The effectiveness of a receiver in these actions meaningfully impacts the likelihood of completion, yet these abilities are difficult to quantify with traditional statistics and modern separation metrics.
+
+The ability to quantify a receiver's in-flight impact on completion probability offers direct strategic value to teams. For play callers, understanding which receivers are most talented at improving completion probability on deep attempts informs route design, matchup selection, and personnel usage. For front offices, it offers the ability to evaluate in-air ball tracking ability and playmaking, traits which complement route-running and separation metrics, supporting player evaluation and acquisition decisions.
+
+Most existing tracking-based analytics focus on separation across the entire route or at the moment of the throw. While useful, these approaches emphasize early route movement and change-of-direction elements that are less prominent in deep vertical routes. By isolating player movement, spatial relationships, and separation dynamics once the ball is released, we can focus directly on the phase in which the completion of deep passes is decided. This perspective allows us to capture and quantify a receiver's ability to influence completion probability while the ball is in the air, a skill that is undervalued in current analytics yet fundamental to the success of downfield passing.
+
+**Dataset and Feature Engineering**
+The provided dataset for this project included frame-level tracking data for all offensive and defensive players in the 2023 NFL season. Pre-release frames contained full movement information, such as location, speed, direction, and orientation, while post-release frames lacked speed, direction, and orientation related fields. A play-level context file provided additional metadata, including pass depth and play outcome.
+
+To model fluctuations in completion probability during ball flight, reconstructing post-release movement variables was essential. Frame-to-frame displacement vectors from player locations yielded instantaneous speed and direction, which were smoothed over a three-frame rolling window to estimate speed, acceleration, and direction, ensuring continuity across the point of release.
+
+The tracking data was reformatted into a wide per-frame structure, where each row contained movement information for the targeted receiver and the four nearest defenders (both at release and per frame), alongside key spatial relationships, including receiver-defender and player-ball distances.
+
+Advanced features were then created in three categories: (1) player motion features such as velocity toward the ball, angle of attack, and estimated time to arrival; (2) defender pursuit and leverage features, including closing speed and defender-ball angle of attack; and (3) interaction features capturing relative advantage, such as separation, crowdedness, and time-to-ball differentials. A temporal feature, 'flight normalized time', is created to represent the position of each frame within the ball-flight window.
+
+We evaluated feature behavior by plotting their average trajectories over flight normalized time, separately for completions versus incompletions, to identify which feature values best distinguished completion outcomes and when in the in-flight phase this separation emerged. Receiver-defender distance, crowdedness, defender closing speed, receiver ball distance advantage, and time-to-ball advantage exhibited the strongest separation, suggesting meaningful use for the completion probability model.
+
+Finally, we performed pairwise correlation analysis to prevent feature duplication. Defender angle to receiver and defender in phase angle were found to be nearly perfectly correlated, so in phase angle was excluded. With this modification, we finalized our feature set and split the data into training and test sets for model development.
 
 
+**Methodology:**
+Using these engineered features, our goal was not conventional binary classification of a completion, but evolving, fame-by-frame estimates of the probability that a pass would ultimately be completed. Each post-release frame was treated as an individual training instance labeled with the play's ultimate completion outcome. Rather than a sequence-based approach, temporal context was preserved using the flight normalized time feature, which encodes a frame's position within the ball in flight window.
 
+Given the nonlinear, interaction-dependent nature of our feature set, we fit an XGBoost classifier to enable the capturing of such complex spatial relationships. Incorporating flight normalized time as a feature enabled the model to learn how spatial cues' impact evolves as a play progresses. A randomized train test split of observations ensured generalizable probability estimates.
 
+A key challenge was preventing the classifier from memorizing the final outcome of the play. Because every post-release frame shares the same completion label, an unconstrained model tends to assign near-certain probabilities early in ball flight, ignoring meaningful spatial variation. To counter this, we applied regulation by limiting tree depth and the number of estimators, while using a low learning rate, resulting in heightened sensitivity to frame-by-frame spatial changes rather than play-level outcome memorization. This produces smooth and evolving signals of completion probability reflecting evolving in-play receiver-defender dynamics.
 
+After training, the model was applied across the dataset, generating estimated completion probability signals for every post-release frame. The trajectory of estimated probabilities fluctuate in response to provided movement and spatial features, remaining smooth enough for integration while sensitive to changes in player movement, leverage, and separation.
 
-- Motivation / Football Background
-	- Why ball in-air time matters: Ball in air time matters with regards to a downfield completion due to the fact that deep passes feature the longest amount of time while the ball is in the air, and rely heavily on how skilled and able the receiver is to track the ball, and use their athletic talents like speed, quickness, and cutting to create pockets for themselves to catch the ball. It is clear that the defense and ball placement of the quarterback impacts this as well, but by viewing this window in time with a sight solely on the receiver, we can create a consolidated metric that combines their athletic talents with ball tracking and adjustment of route.
-	- What coaches currently evaluate or struggle to quantify?: I am not really sure, maybe they need to better understand which receivers are able to best use their talents to increase deep ball probability, and use this to adjust personel decisions, acquisitions, and use of receivers. Focusing deep targets on players with this skill is well advised.
-	- Gaps in current analytics: I think that a lot of the separation modeling in current analytics has to do with short passes and those with significant breaks, which is certainly meaningful to quantify players route running. My approach is unique in 2 ways: 1) The metric quantifies a combination of athletic ability, ball tracking, and route manipulation (in accordance with what the qb sees) and 2) We attempt to model, at each frame, the probability of ultimate completion, for highly volatile passes, giving a view into the change of these dynamics over the course of the ball in air period.
+Beyond frame-by-frame estimates, we quantify a receiver's influence at play level with the 'Net In-Air Completion Probability Change' metric. Using the estimated completion-probability at release as a baseline, we treat the curve from release to ball arrival as continuous over flight normalized time, and the area above or below the baseline is computed. Areas above the baseline indicate positive contributions and below indicate negative, capturing the receiver's cumulative impact on the play's completion probability net of the expectation at release.
 
-Dataset and Feature Engineering
-Fix: Move 60-70% of feature list to Appendix, in main text summarize categories with 2-3 examples each (receiver features, defender features, interaction features)
+Overall, the model produces frame-by-frame completion probabilities and the NCPC metric, providing a quantitative measure of receiver impact throughout a play. Aggregated across all plays, NCPC allows ranking of receivers by their ability to increase completion probability in-flight. While not a standalone measure of overall performance, it offers a consistent lens for comparing situational impact across deep pass plays.
 
+**Results**
+In the media gallery, we provide the top and bottom receivers in average Net In-Air Completion Probability Change (NCPC) on vertical deep passes in 2023. Among the top performers, we see expected names such as Nico Collins, Keenan Allen, Tyreek Hill, and Ja'Marr Chase, known for their downfield route-running and physical talents. This list also includes several "gadget" receivers like Cedrick Wilson, Rondale Moore, Christian Kirk, and Jameson Williams. Though these receivers weren't known as all-around receivers in 2023, they share traits including speed and change of direction that make them effective deep threats well-suited to generate positive opportunities downfield.
 
+Among the lowest NCPC values on vertical routes, we observe players including Michael Thomas, Darnell Mooney, Rashod Bateman, and DeVante Parker. Receivers like Thomas, Bateman, and Parker are generally not viewed as elusive downfield threats, so their lower NCPC values aligns with intuition, reflecting limited ability to create separation and leverage. Mooney's appearance near the bottom of this list, however, highlights a limitation of the NCPC modeling which will be explored further below.
 
-- Dataset & Data Engineering
-	- We were provided input data, which featured player tracking and player movement for all players prior to release, as well as output data, which was that for after the ball was release. First, since output data doesn't include key player movement tracking features like speed, direction, and acceleration, we had to use player motion to create smoothed estimates of these values based on past frames. 
-	- Next, the goal was to create wide data, where for each frame of each play, we had the following information: x, y, s, a, o, dir, and ball_dist for targeted receivers, the closest 4 defenders at the time of ball release, and the closest 4 defenders for that frame, and also for defenders, we had their distance to the receiver at that frame.
-	- Finally, we created a multitude of advanced player tracking features that took into account receiver/defender motion and interaction of such motion. The following features where created:
-		- Targeted Receiver: v_toward_ball, closing_speed_ball, t_to_ball, ball_facing_angle, sideline_dist, turn_angle_smoothed, a_toward_ball
-		- Defenders (def_N_*, def_closeN_*): v_toward_ball, closing_speed_ball, closing_speed_ball_adv, momentum_adv, closing_speed_rec, angle_rec_deg, angle_ball_deg, t_to_ball, in_phase
-		- Interaction features:
-			- min_separation_all_def, mean_separation_closest_3_defs, min_ball_dist_all_def,ball_dist_advantage, min_t_def_to_ball, min_t_def_minus_t_rec, crowdedness, closest_2_def_angle_diff
-		- Additionally, we created a feature, flight normalized time, which is a value in the range 0 to 1 representing where the frame lies in the set of post release frames for a play - intended to incorporate how close to attempted catch the frame was to induce a temporal nature into modeling. Also a route_group (VERTICAL, INTERMEDIATE, QUICK, and BACKFIELD)
-	- We calculated correlation for these, and did some EDA in visualizing and comparing a smoothed average / distribution curve for values of each metric for complete versus incomplete passes to get an idea of the 'separation' each metric induces in predictability of completion
-	- We grabbed our features and split into a training and test set to be used for modeling
+To examine NCPC more closely, we consider two representative plays, one positive and one negative. For each, videos of the animation of player movement and completion probability curve are included in the media gallery. First is a 48-yard touchdown by Rondale Moore, the second ranked receiver in average NCPC on vertical routes in 2023. At the moment of release, two defenders appear to bracket Moore downfield, with a model estimate of 25% completion probability at this moment. However, with no safety help over the top, Moore accelerates vertically, creating extensive separation from both defenders. The completion probability sharply increases to 80% before arrival, resulting in an NCPC of +0.277, one of the strongest values observed on vertical targets this season.
 
-Methodology:
-Fix: Judges don't need internal reasoning, they need the effect: why regularization produces usable probability curves, why smoother probabilities matter for frame by frame metric (replace long descriptions with crisp, high level narrative and put tuning details into Appendix)
+In contrast, Michael Thomas, who ranked last among all receivers with 5 or more deep vertical targets, illustrates a negative example. In Week 7, Derek Carr targets Thomas on a go route up the left sideline. At time of release, the model assigns a completion probability of 35%, but as the trailing defender closes in, Thomas fails to generate separation or leverage. The completion probability trends down to around 20%, and Thomas earns an NCPC of -0.093, with the ball ultimately being deflected. Though Carr's ball placement could have been better, Thomas' inability to create separation downfield is represented clearly through the NCPC value.
 
+We also include distribution density curves of NCPC values for vertical deep passes in the media gallery. For completions, NCPC values roughly range from -0.2 to 0.35, with most values clustered between 0.0 and 0.2. This makes sense intuitively, as completed deep passes generally require some sort of gain in receiver advantage. Incompletions, in contrast, range in NCPC value from -0.2 to 0.2 centered just below zero, reflecting the fact that many unsuccessful deep passes involve little to no positive gain for receivers, often even involving decline as defenders close space.
 
+Overall, the results of NCPC illustrate its strength in quantification of a receiver's ability to influence completion probability through features the model was trained on, including separation, leverage, pursuit, and movement dynamics. Though other traits, such as catch radius, vertical jumping, strength, and hand skills impact receivers abilities on deep ball targets, NCPC isolates movement and space creation components of downfield receiving. These components allow NCPC to highlight valuable traits for personnel evaluation and game-planning, including ball tracking, route adjustment, and the ability to create space during the ball's flight. 
 
-- Methodology
-	- I fit a xgboost classifier to the data, with all of the features for each frame with the label as complete. Because the label is binary and reflects the end of play completion status, with the goal of producing a probablistic signal over time of per frame completion probability as the ball is in the air, we intentionally regularized this model by limiting its number of estimators, max tree depth, and a low learning rate. As compared to a more complex model, who would learn a great deal of confidence, even in early frames of a play, whether or not that play resulted in an ultimate completion or not, regularization allows us a method to use the features derived to understand signals in the dataset related to confidence of completion / incompletion, while still considering the position of the frame within the ball flight with flight normalized time. With this manual regularization, we are able to produce stable and well behaved probability trajectories that fluctuate over time and serve as adequate estimates for the flucuation of probability of ultimate completion for each frame progression while the ball is in the air. The output of this model, when fit back to every frame in the dataset (not just training frames), is the models estimated ultimate completion probability per frame of each play.
-	- Using completion probability estimates at each frame of a play, we sought to create a composite metric that quantified the amount by which the receiver increased their probability of completion over the course of the ball in air period. The concept here was clear - start with what the first frame after release predicted the completion probability as. Any frame after at which the completion probability is greater than the ball release probability should be positive contribution, and any frame with comp prob less than the ball release probability should be negative. We could create a 'curve', which linearly attaches each of the (frame, completion prob) pairs, and create this metric by calculating the 'area under the curve' using the completion probability at ball release as the 'zero line'. Any area above the line was added as 'positive', and underneath negative, resulting in an integration based metric that we termed 'Net In-Air Completion Probability Change', as it encompasses the 'net', or entirety of the ball in air period, with the baseline being the probability at ball release, valuing to 'change' of that completion probability as the metric.
-	- For each play, we can now analyze individual frames completion probability values, as well as quantify for a play, a value as a signal of how much the receiver increased completion probability over the course of the play.
+**Limitations**
+Despite the insightful findings and outcomes brought about throughout the development of the NCPC metric, several limitations showed their face. The primary limitation was the components of the data included. Since the dataset featured only movement related data for players, key factors to deep ball ability, including physical features of the receiver like catch radius and jumping ability and physical contact throughout the route were not incorporated in modeling. Another key limitation was the lack of isolation of the receivers talents. Clearly, more factors are at play contributing to the completion outcome of a deep pass, including specifically the ball placement of the quarterback and the ability of surrounding defenders. Finally, a key limitation was found in some highly negative NCPC values. In some scenarios marked 'go' routes, off schedule plays, where the quarterback may have been scrambling, require the receiver to change path, resulting often in big decreases in completion probabilities as defensive backs close in, unrightfully penalizing the receiver. Future work may identify and remove these sorts of plays, sticking only to vertical routes ran on their intended path. These limitations are just three of the more impactful ones identified, but many more limitations could likely be identified with the approach taken for the NCPC metric.
 
-Results
-Need to: explain why these players score high/low through examples, connect metric to football intuition, show how probability trajectories look... build one strong figure - distribution of ncpc by route group, case study of probability evolution over time with animation
+**Conclusion**
+Despite their volatility, downfield passes hold great value in modern offensive football, existing as one of the most efficient ways to move the ball due to their explosive upside. Though many factors go into their successful completion, the ability of a receiver to track the ball, adjust their route, and create space to catch the deep ball is often one that overlooked due to its difficulty to quantify. By using advanced player movement, separation, and spatial interaction features, I modeled completion probability over the course of the in-air period of deep passes, and used the cumulative gain or loss of such probability relative to that at the moment the ball was released to create a metric called 'Net In-Air Completion Probability Change'. This metric seeks to quantify how much a receiver increases or decreases the chance of a completion in ball flight. With the clear value of the deep pass in modern NFL offense, play callers, front offices, and analysts alike can look to NCPC to make personnel decisions, evaluate performance, and optimize play-calling to maximize the efficiency of one of the highest reward plays in football.
 
-
-
-- Results
-	- Receiver Rankings: Discussion about best and worst rankings for vertical routes?
-		- Household Names: Nico Collins, Brandon Aiyuk, Keenan Allen, Godwin, Tyreek, Waddle, Chase, Evans
-		- Surprises: Ced Wilson, Rondale Moore, Dalton Kincaid, Kylen Granson, Christian Kirk, Westbrook-Ikhine, D.J. Chark
-		- Worst:
-			- Surprises: A.J. Brown
-	- Case Study(s): Good: Christian Kirk, Bad: A.J. Brown
 
 Use Cases:
 Examples: Scouting - identify receivers skilled at deep ball tracking / separation, Game Planning - choose deep target matchups where receivers historically gain probability, Analytics Staff - pair metric with QB ball placement skills
@@ -87,6 +96,11 @@ Examples: Scouting - identify receivers skilled at deep ball tracking / separati
 Limitations
 Add: I assume receiver is free to optimize path, sometime route constrained, physical contact not captured....
 
+doesn't have anything to do with ball placement, in air skill, etc
+
+very defense and qb dependent, non isolation
+
+weird finding: off schedule plays can very much penalize you... a.j. brown - 2023122501, 3436
 
 
 - Limitations & Future Work
@@ -96,3 +110,7 @@ Add: I assume receiver is free to optimize path, sometime route constrained, phy
 - Conclusion
 
 
+
+
+Rondale Moore: 2023111904, 136, https://www.youtube.com/watch?v=d-9SgldS3J8 0:33
+Michael Thomas: 2023101900, 1277, https://www.youtube.com/watch?v=tJq8LO78XuM 3:42
